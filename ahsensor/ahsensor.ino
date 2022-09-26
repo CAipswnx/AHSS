@@ -19,8 +19,8 @@ String resultMusic = "";
 SimpleDHT11 dht11(pinDHT11);
 
 //WIFI連線
-char SSID[] = "";
-char PASSWORD[] = "";
+char SSID[] = "caa";
+char PASSWORD[] = "00002222";
 
 //計算時間
 long sendTime = 0;
@@ -48,6 +48,7 @@ void loop() {
   }
   if(resultMusic != ""){
     if(resultMusic == "bbq"){
+      Serial.print("播放BBQ");
       bbq();
     }else if(resultMusic == "twomin"){
       twomin();
@@ -130,12 +131,14 @@ void sendData(byte *temperature, byte *humidity, float dBValue) {
   
   if(httpCode == HTTP_CODE_OK)
   {
-    Serial.println(http.getString()); //資料接收
-    String resultData = http.getString();
+    
+    String resultData = http.getString();//資料接收
+    Serial.println(resultData); 
     int starts = 0;
     int ends = resultData.indexOf("=");
     String key = resultData.substring(0,ends);
     String value ="";
+    
     if(key=="music")
     {
       starts = ends;
@@ -150,7 +153,9 @@ void sendData(byte *temperature, byte *humidity, float dBValue) {
       resultMusic = value;
       starts = ends;
       resultData = resultData.substring(starts+1);
+      
     }
+    
   }
   else
   {
