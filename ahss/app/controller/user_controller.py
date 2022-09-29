@@ -1,13 +1,13 @@
-from flask import Flask
+from flask import Flask,render_template
 from flask_cors import *
 from flask import request
 from flask import jsonify
 from app import app
 from app.models.user_model import *
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    return "<h1>Hello!</h1>"
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/user/add', methods=['GET', 'POST'])
 def addUser():
@@ -15,8 +15,7 @@ def addUser():
     email = request.values['email']
     account = request.values['account']
     password = request.values['password']
-    phone = request.values['phone']
-    return add_user(nickname, email, account, password, phone)
+    return add_user(nickname, email, account, password)
         
 
 @app.route('/user/update', methods=['GET', 'POST'])

@@ -9,7 +9,7 @@ insert_sensor = 'INSERT INTO sensors VALUES(?, ?, ?, ?, ?, ?)'
 insert_sensor_data = 'INSERT INTO sensors_data VALUES(?, ?, ?, ?, ?, ?)'
 
 #update
-update_music_data = 'UPDATE sensors SET ud_time=?,music=? WHERE sensor_id=?'
+update_music_data = 'UPDATE sensors SET music=?,ud_time=? WHERE sensor_id=?'
 
 #delete
 

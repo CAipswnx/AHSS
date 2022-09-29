@@ -5,15 +5,6 @@ from flask import jsonify
 from app import app
 from app.models.sensor_model import *
 
-@app.route('/test1', methods=['GET', 'POST'])
-def test1():
-    test = request.values['test']
-    test1 = request.values['test1']
-    if test == 'abc' and test1 == 'abd':
-        return "OK"
-    else:
-        return "NO"
-
 @app.route('/sensor/addData', methods=['GET', 'POST'])
 def addsensorData():
     sensor_name = request.values['sensor_name']

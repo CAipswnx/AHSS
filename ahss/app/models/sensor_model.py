@@ -15,7 +15,7 @@ def add_sensor_data(sensor_name, sensor_type,temperature,humidity,dba):
     sensor = cursor.execute(query_sensor, (sensor_name,sensor_type)).fetchone()
     if sensor is None:
         cursor.execute(insert_sensor, (None, sensor_name, sensor_type, None, update_time, None))
-        sensor = result_sensor(sensor_name,sensor_type)
+        sensor = cursor.execute(query_sensor, (sensor_name,sensor_type)).fetchone()
     sensor_id = sensor[0]
     music = sensor[1]
     cursor.execute(insert_sensor_data, (None, sensor_id, temperature, humidity, update_time, dba))
@@ -23,12 +23,13 @@ def add_sensor_data(sensor_name, sensor_type,temperature,humidity,dba):
     if music is None:       
         result = "add sensor data successfully!"
     else:
-        cursor.execute(update_music_data, (update_time, None, sensor_id))
+        cursor.execute(update_music_data, (None, update_time, sensor_id))
         result = "music=" + music
     conn.commit()
     conn.close()
     return result
 
+#取得即時資料
 def get_real_data(account, sensor_name):
     real_datas = []
     conn = sqlite3.connect('app/db/ahss.db')
@@ -46,10 +47,12 @@ def get_real_data(account, sensor_name):
     conn.close()
     return real_datas
 
+#取得歷史資料
 def get_his_data(account, sensor_name):
     dali = pd.read_json('dali.json')
     return dali
 
+#更新音樂
 def update_music(account, sensor_name, music):
     update_time = datetime.datetime.now() + datetime.timedelta(hours = 8)
     conn = sqlite3.connect('app/db/ahss.db')
@@ -64,4 +67,6 @@ def update_music(account, sensor_name, music):
         cursor.execute(update_music_data, ('bbq', update_time, result_sensor_id[0]))
     else:
         cursor.execute(update_music_data, (music, update_time, result_sensor_id[0]))
+    conn.commit()
+    conn.close()
     return "music update successfully!"

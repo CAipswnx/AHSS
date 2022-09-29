@@ -6,13 +6,13 @@ import datetime
 from app.sql.user_sql import *
 
 #新增使用者
-def add_user(nickname, email,account, password,phone):
+def add_user(nickname, email,account, password):
     update_time = datetime.datetime.now() + datetime.timedelta(hours = 8)
     conn = sqlite3.connect('app/db/ahss.db')
     cursor = conn.cursor()
     result = cursor.execute(query_user_info, (account,)).fetchone()
     if result is None:
-        cursor.execute(insert_user, (None, nickname, email, account, password, update_time,phone)) #執行SQL
+        cursor.execute(insert_user, (None, nickname, email, account, password, update_time,None)) #執行SQL
     else:
         return "Error: account is exist!"
     conn.commit()

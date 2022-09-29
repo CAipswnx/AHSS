@@ -1,0 +1,169 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+</head>
+<script>
+    var serverUrl = 'http://127.0.0.1:5000';
+    function test() {
+        var a = $('#a');
+        $.post(serverUrl + '/testThread',
+        {
+            a: a.val(),
+        },function (e) {
+                console.log(e);
+                $("#content").html(e);
+            });
+    }
+
+    function getAllUsers() {
+        $.post(serverUrl + '/users/all',
+            function (e) {
+                console.log(e);
+
+                var show = "";
+                var obj = Object.keys(e);
+
+                for (var i = Object.keys(e).length - 1 ; i >= 0; i--)
+                    show += "user_id: " + obj[i] + " nickname:" + e[obj[i]]['nickname'] + ", Email:" + e[obj[i]]['email'] + ", Account:" + e[obj[i]]['account'] + ", Password:" + e[obj[i]]['password'] + " - - - - - <a href='#' onclick='remove(" + e[obj[i]]['account'] + ")'>Remove</a>" + "<br>";
+
+                $("#content").html(show);
+            });
+    }
+
+    function getUser() {
+        var account = $('#account');
+        $.post(serverUrl + '/user/info',
+        {
+            account: account.val()
+        }, function (e) {
+            console.log(e);
+            $("#content").html(JSON.stringify(e));
+        });
+    }
+    function getRealData() {
+        var account = $('#account');
+        var sensor_name = $('#sensor_name');
+        $.post(serverUrl + '/sensor/getRealData',
+        {
+            account: account.val(),
+            sensor_name: sensor_name.val()
+        }, function (e) {
+            console.log(e);
+            $("#content").html(JSON.stringify(e));
+        });
+    }
+    function updateUserSensor(sensor_id) {
+        var account = $('#account');
+        $.post(serverUrl + '/sensor/updateUser',
+        {
+            account: account.val(),
+            sensor_id: sensor_id
+        }, function (e) {
+            console.log(e);
+            $("#content").html(e);
+        });
+    }
+    
+    function getUserSensor() {
+        var account = $('#account');
+
+        $.post(serverUrl + '/user/getSensor',
+    {
+        account: account.val()
+    }, function (e) {
+        console.log(e);
+
+        var show = "";
+        var obj = Object.keys(e);
+
+        for (var i = Object.keys(e).length - 1 ; i >= 0; i--)
+            show += "sensor_id: " + e[obj[i]]['sensor_id'] + " sensor_name:" + e[obj[i]]['sensor_name'] + ", sensor_type:" + e[obj[i]]['sensor_type'] + ", status:" + e[obj[i]]['status'] + " - - - - - <a href='#' onclick='updateUserSensor(" + e[obj[i]]['sensor_id'] + ")'>Update Sensor</a>" + "<br>";
+
+        $("#content").html(show);
+    });
+    }
+
+    function remove(account) {
+        $.post(serverUrl + '/user/remove',
+        {
+            account: account
+        }, function (e) {
+            getAllUsers()
+        });
+    }
+
+    function addUser() {
+        var nickname = $('#nickname'),
+            email = $('#email'),
+            account = $('#account'),
+            password = $('#password'),
+            phone = $('#phone');
+
+        var parameter =
+        {
+            nickname: nickname.val(),
+            email: email.val(),
+            account: account.val(),
+            password: password.val(),
+            phone: phone.val()
+        };
+
+        $.post(serverUrl + '/user/add', parameter,
+            function (e) {
+                $("#content").html(e);
+            }
+        );
+    }
+
+    function updateUser() {
+        var nickname = $('#nickname'),
+            email = $('#email'),
+            account = $('#account'),
+            password = $('#password'),
+            phone = $('#phone');
+
+        var parameter =
+        {
+            phone: phone.val(),
+            nickname: nickname.val(),
+            email: email.val(),
+            account: account.val(),
+            password: password.val()
+        };
+
+        $.post(serverUrl + '/user/update', parameter,
+            function (e) {
+                $("#content").html(e);
+            }
+        );
+    }
+</script>
+<body>
+    <div>
+        <h1>User Add And Update</h1>
+        Nickname: <input id="nickname" type="text"><br>
+        Email: <input id="email" type="text"><br>
+        Account: <input id="account" type="text"><br>
+        Password: <input id="password" type="text"><br>
+        Phone: <input id="phone" type="text"><br>
+        Sensor_name: <input id="sensor_name" type="text"><br>
+        a: <input id="a" type="text"><br>
+        <button onclick="addUser()">Add</button>
+        <button onclick="updateUser()">Update</button>
+    </div>
+    <br><br>
+    <div>
+        <button onclick="getAllUsers()">Users</button>
+        <button onclick="getUser()">User</button>
+        <button onclick="getUserSensor()">sensor</button>
+        <button onclick="updateUser()">updateUser</button>
+        <button onclick="getRealData()">RealData</button>
+        <button onclick="test()">test</button>
+    </div>
+    <br>
+    <div id="content1"></div>
+    <div id="content"></div>
+</body>
+</html>
